@@ -41,12 +41,14 @@ private:
     float wlimit = 3.f;
     float vlimit = 0.6;
     float erreurPos = 0.07;
+    float kForward = 1.5;
+    float kAngular = 2.;
 
     Position target;
 
 public:
     Position center{1.5, 1.5, 0};
-    Position fakeTarget = {3, 3, 0};
+    Position fakeTarget = {0, 2, 0};
 
     Trajectory(Gladiator *gladiator)
     {
@@ -74,8 +76,8 @@ public:
             double consw = kw * reductionAngle(rho - pos.a);
             double consv = kv * d * cos(reductionAngle(rho - pos.a));
 
-            consw = min((max((float)consw, -wlimit)), wlimit);
-            consv = min((max((float)consv, -vlimit)), vlimit);
+            consw = min((max((float)consw, -wlimit)), wlimit) * kAngular;
+            consv = min((max((float)consv, -vlimit)), vlimit) * kForward;
 
             double consvl = consv - gladiator->robot->getRobotRadius() * consw;
             double consvr = consv + gladiator->robot->getRobotRadius() * consw;
@@ -96,7 +98,7 @@ public:
     }
     bool isBloqued()
     {
-        return (gladiator->control->getWheelSpeed(WheelAxis::LEFT) <= 0.1 && gladiator->control->getWheelSpeed(WheelAxis::RIGHT) <= 0.1);
+        return (gladiator->control->getWheelSpeed(WheelAxis::LEFT) <= 0.01 && gladiator->control->getWheelSpeed(WheelAxis::RIGHT) <= 0.01);
     }
 
     bool rotate(double alpha)

@@ -16,10 +16,10 @@ public:
 
     void tryKill(void)
     {
-        gladiator->weapon->setTarget(WeaponPin::M1, 60);
-        delay(800);
-        gladiator->weapon->setTarget(WeaponPin::M1, 120);
-        delay(800);
+        gladiator->weapon->setTarget(WeaponPin::M1, 30);
+        delay(100);
+        gladiator->weapon->setTarget(WeaponPin::M1, 90);
+        delay(100);
     }
 
     void zero(void)
