@@ -21,12 +21,14 @@ void setup()
     trajectory = new Trajectory(gladiator);
     foe = new Foe(gladiator);
     killerQueen = new KillerQueen(gladiator);
+
     gladiator->game->onReset(&reset);
 }
 
 void reset()
 {
     gladiator->log("Call of reset function");
+    killerQueen->zero();
 }
 
 void loop()
@@ -41,12 +43,18 @@ void loop()
         if (foe->panikMode())
         {
             trajectory->esquive(RIGHT);
-            killerQueen->tryKill();
         }
         if (trajectory->isOutside())
         {
             gladiator->log("Alerte générale!!!");
         }
+        killerQueen->tryKill();
+
+        if (trajectory->isBloqued())
+        {
+            trajectory->setTarget(trajectory->center);
+        }
+        
 
         const MazeSquare *nearestSquare = gladiator->maze->getNearestSquare();
         RobotData data = gladiator->robot->getData();
@@ -94,6 +102,7 @@ void loop()
     else
     {
         gladiator->log("[Exo 3D] - Waiting");
+        // killerQueen->zero();
     }
     delay(10);
 }

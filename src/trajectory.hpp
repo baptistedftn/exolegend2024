@@ -43,7 +43,7 @@ private:
     Position target;
 
 public:
-    Position center{3, 3, 0};
+    Position center{1.5, 1.5, 0};
 
     Trajectory(Gladiator *gladiator)
     {
@@ -90,6 +90,10 @@ public:
             gladiator->control->setWheelSpeed(WheelAxis::RIGHT, 0, false);
             gladiator->control->setWheelSpeed(WheelAxis::LEFT, 0, false);
         }
+    }
+    bool isBloqued()
+    {
+        return (gladiator->control->getWheelSpeed(WheelAxis::LEFT) <= 0.1 && gladiator->control->getWheelSpeed(WheelAxis::RIGHT) <= 0.1);
     }
 
     bool rotate(double alpha)
