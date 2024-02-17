@@ -43,7 +43,7 @@ private:
     Position target;
 
 public:
-    Position center{1.5, 1.5, 0};
+    Position center{3, 3, 0};
 
     Trajectory(Gladiator *gladiator)
     {
