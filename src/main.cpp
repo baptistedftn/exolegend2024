@@ -49,21 +49,19 @@ void loop()
         }
 
         const MazeSquare *nearestSquare = gladiator->maze->getNearestSquare();
-        Position myPosition = gladiator->robot->getData().position;
         RobotData data = gladiator->robot->getData();
         unsigned char selfID = data.teamId;
 
-        MazeSquare *neighbors[4] = {nearestSquare->northSquare, nearestSquare->westSquare,
+        MazeSquare *arroundSquare[4] = {nearestSquare->northSquare, nearestSquare->westSquare,
                                     nearestSquare->eastSquare, nearestSquare->southSquare};
         Position squareCenter[4];
         float squareSize = gladiator->maze->getSquareSize();
         for (int i = 0; i < 4; ++i)
         {
-            if (neighbors[i] != nullptr && neighbors[i]->possession != selfID)
+            if (arroundSquare[i] != nullptr && arroundSquare[i]->possession != selfID)
             {
-                // squareCenter[i].x = (neighbors[i]->i + 0.5) * squareSize;
-                squareCenter[i].x = (neighbors[i]->i) * squareSize;
-                squareCenter[i].y = (neighbors[i]->j) * squareSize;
+                squareCenter[i].x = (arroundSquare[i]->i +.5) * squareSize;
+                squareCenter[i].y = (arroundSquare[i]->j+.5) * squareSize;
             }
         }
 
@@ -71,10 +69,11 @@ void loop()
         float seuil = std::numeric_limits<float>::max();
         for (int i = 0; i < 4; ++i)
         {
-            if (neighbors[i] != nullptr && neighbors[i]->possession != selfID)
+            if (arroundSquare[i] != nullptr && arroundSquare[i]->possession != selfID)
             {
                 float distance = sqrt((squareCenter[i].x - trajectory->center.x) * (squareCenter[i].x - trajectory->center.x) +
                                       (squareCenter[i].y - trajectory->center.y) * (squareCenter[i].y - trajectory->center.y));
+                                      
                 if (distance < seuil)
                 {
                     seuil = distance;
