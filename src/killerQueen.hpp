@@ -16,8 +16,8 @@ public:
     void tryKill(void)
     {
         gladiator->weapon->setTarget(WeaponPin::M1, 0);
-        delay(500);
+        delay(100);
         gladiator->weapon->setTarget(WeaponPin::M1, 90);
-        delay(500);
+        delay(100);
     }
 };

@@ -2,6 +2,9 @@
 #include "utils.hpp"
 #include <cmath>
 
+#if !defined(TRAJ)
+#define TRAJ
+
 using namespace std;
 
 enum DIRECTION
@@ -41,6 +44,7 @@ private:
 
 public:
     Position center{1.5, 1.5, 0};
+
     Trajectory(Gladiator *gladiator)
     {
         this->gladiator = gladiator;
@@ -135,3 +139,5 @@ public:
         }
     }
 };
+
+#endif

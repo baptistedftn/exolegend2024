@@ -1,7 +1,8 @@
 #include "gladiator.h"
 #include "trajectory.hpp"
 #include "foe.hpp"
-#include <killerQueen.hpp>
+#include "mazeResolver.hpp"
+#include "killerQueen.hpp"
 #include <string.h>
 
 using namespace std;
@@ -11,6 +12,7 @@ Gladiator *gladiator;
 Trajectory *trajectory;
 Foe *foe;
 KillerQueen *killerQueen;
+MazeResolver *mazeResolver;
 
 MazeSquare *last = nullptr;
 
@@ -21,6 +23,8 @@ void setup()
     trajectory = new Trajectory(gladiator);
     foe = new Foe(gladiator);
     killerQueen = new KillerQueen(gladiator);
+    mazeResolver = new MazeResolver(gladiator);
+
     gladiator->game->onReset(&reset);
 }
 
@@ -47,46 +51,7 @@ void loop()
         {
             gladiator->log("Alerte générale!!!");
         }
-
-        const MazeSquare *nearestSquare = gladiator->maze->getNearestSquare();
-        RobotData data = gladiator->robot->getData();
-        unsigned char selfID = data.teamId;
-
-        MazeSquare *arroundSquare[4] = {nearestSquare->northSquare, nearestSquare->westSquare,
-                                    nearestSquare->eastSquare, nearestSquare->southSquare};
-        Position squareCenter[4];
-        float squareSize = gladiator->maze->getSquareSize();
-        for (int i = 0; i < 4; ++i)
-        {
-            if (arroundSquare[i] != nullptr && arroundSquare[i]->possession != selfID)
-            {
-                squareCenter[i].x = (arroundSquare[i]->i +.5) * squareSize;
-                squareCenter[i].y = (arroundSquare[i]->j+.5) * squareSize;
-            }
-        }
-
-        int minIndex = -1;
-        float seuil = std::numeric_limits<float>::max();
-        for (int i = 0; i < 4; ++i)
-        {
-            if (arroundSquare[i] != nullptr && arroundSquare[i]->possession != selfID)
-            {
-                float distance = sqrt((squareCenter[i].x - trajectory->center.x) * (squareCenter[i].x - trajectory->center.x) +
-                                      (squareCenter[i].y - trajectory->center.y) * (squareCenter[i].y - trajectory->center.y));
-                                      
-                if (distance < seuil)
-                {
-                    seuil = distance;
-                    minIndex = i;
-                }
-            }
-        }
-
-        if (minIndex != -1)
-        {
-            Position goal{squareCenter[minIndex].x, squareCenter[minIndex].y, 0};
-            trajectory->setTarget(goal);
-        }
+        mazeResolver->run(trajectory);
         trajectory->run();
     }
     else
