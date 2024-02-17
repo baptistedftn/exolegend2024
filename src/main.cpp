@@ -68,16 +68,16 @@ void loop()
         }
 
         int minIndex = -1;
-        float minDistance = std::numeric_limits<float>::max();
+        float seuil = std::numeric_limits<float>::max();
         for (int i = 0; i < 4; ++i)
         {
             if (neighbors[i] != nullptr && neighbors[i]->possession != selfID)
             {
                 float distance = sqrt((squareCenter[i].x - trajectory->center.x) * (squareCenter[i].x - trajectory->center.x) +
                                       (squareCenter[i].y - trajectory->center.y) * (squareCenter[i].y - trajectory->center.y));
-                if (distance < minDistance)
+                if (distance < seuil)
                 {
-                    minDistance = distance;
+                    seuil = distance;
                     minIndex = i;
                 }
             }
