@@ -39,15 +39,15 @@ void loop()
 {
     if (gladiator->game->isStarted())
     {
-        gladiator->log("[Exo 3D] - Goooooooo !");
+        // gladiator->log("[Exo 3D] - Goooooooo !");
         if (gladiator->weapon->canLaunchRocket())
         {
             gladiator->weapon->launchRocket();
         }
-        if (foe->panikMode())
-        {
-            trajectory->esquive(RIGHT);
-        }
+        // if (foe->panikMode())
+        // {
+        //     trajectory->esquive(RIGHT);
+        // }
         if (trajectory->isOutside(start))
         {
             trajectory->setTarget(trajectory->center);
@@ -83,8 +83,8 @@ void loop()
         {
             if (arroundSquare[i] != nullptr && arroundSquare[i]->possession != selfID)
             {
-                float distance = sqrt((newSquare[i].x - trajectory->center.x) * (newSquare[i].x - trajectory->center.x) +
-                                      (newSquare[i].y - trajectory->center.y) * (newSquare[i].y - trajectory->center.y));
+                float distance = sqrt((newSquare[i].x - trajectory->fakeTarget.x) * (newSquare[i].x - trajectory->fakeTarget.x) +
+                                      (newSquare[i].y - trajectory->fakeTarget.y) * (newSquare[i].y - trajectory->fakeTarget.y));
 
                 if (distance < seuil)
                 {

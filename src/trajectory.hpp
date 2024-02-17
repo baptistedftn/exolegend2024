@@ -33,7 +33,8 @@ private:
     }
 
     double initialMazeSize;
-    double currentReduction;
+    int currentReduction;
+    double squareSize;
 
     float kw = 1.2;
     float kv = 1.f;
@@ -45,13 +46,14 @@ private:
 
 public:
     Position center{1.5, 1.5, 0};
+    Position fakeTarget = {3, 3, 0};
 
     Trajectory(Gladiator *gladiator)
     {
         this->gladiator = gladiator;
         this->target = {gladiator->robot->getData().position.x, gladiator->robot->getData().position.y};
-        this->initialMazeSize = gladiator->maze->getSize();
         this->currentReduction = 0;
+        this->squareSize = gladiator->maze->getSquareSize();
     }
 
     void setTarget(Position target)
@@ -120,13 +122,22 @@ public:
     bool isOutside(std::chrono::_V2::steady_clock::time_point startTime)
     {
         auto end = std::chrono::steady_clock::now();
-        auto elapsedSeconds = std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
-        gladiator->log("Réductions = %d blocs", elapsedSeconds / 20);
+        auto elapsedSeconds = std::chrono::duration_cast<std::chrono::seconds>(end - startTime).count();
+        this->currentReduction = elapsedSeconds / 20;
+        gladiator->log("Réductions = %d blocs", currentReduction);
         Position currentPosition = gladiator->robot->getData().cposition; // position en m
-        // this->currentReduction = initialMazeSize - currentMazeSize;
-        gladiator->log("réduction: %f, initial: %f", currentReduction, initialMazeSize);
-        currentReduction -= initialMazeSize / 12;
-        return false;
+        if ((currentReduction * squareSize) < currentPosition.x < (12 - (currentReduction * squareSize)))
+        {
+            return false;
+        }
+        else if ((currentReduction * squareSize) < currentPosition.y < (12 - (currentReduction * squareSize)))
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 
     void esquive(DIRECTION direction)
