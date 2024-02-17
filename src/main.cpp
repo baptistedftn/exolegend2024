@@ -2,7 +2,8 @@
 #include "trajectory.hpp"
 #include "foe.hpp"
 #include <killerQueen.hpp>
-#include <string.h>
+#include <string>
+#include <chrono>
 
 using namespace std;
 
@@ -13,6 +14,8 @@ Foe *foe;
 KillerQueen *killerQueen;
 
 MazeSquare *last = nullptr;
+
+auto start = std::chrono::steady_clock::now();
 
 void reset();
 void setup()
@@ -29,6 +32,7 @@ void reset()
 {
     gladiator->log("Call of reset function");
     killerQueen->zero();
+    start = std::chrono::steady_clock::now();
 }
 
 void loop()
@@ -44,9 +48,10 @@ void loop()
         {
             trajectory->esquive(RIGHT);
         }
-        if (trajectory->isOutside())
+        if (trajectory->isOutside(start))
         {
-            gladiator->log("Alerte générale!!!");
+            trajectory->setTarget(trajectory->center);
+            gladiator->log("Alerte générale!!! On rentre au bercail");
         }
         killerQueen->tryKill();
 
@@ -54,7 +59,6 @@ void loop()
         {
             trajectory->setTarget(trajectory->center);
         }
-        
 
         const MazeSquare *nearestSquare = gladiator->maze->getNearestSquare();
         RobotData data = gladiator->robot->getData();
@@ -66,7 +70,6 @@ void loop()
         float squareSize = gladiator->maze->getSquareSize();
         for (int i = 0; i < 4; ++i)
         {
-            // if (arroundSquare[i] != nullptr)
             if (arroundSquare[i] != nullptr && arroundSquare[i]->possession != selfID)
             {
                 newSquare[i].x = (arroundSquare[i]->i + .5) * squareSize;
@@ -78,7 +81,6 @@ void loop()
         float seuil = std::numeric_limits<float>::max();
         for (int i = 0; i < 4; ++i)
         {
-            // if (arroundSquare[i] != nullptr)
             if (arroundSquare[i] != nullptr && arroundSquare[i]->possession != selfID)
             {
                 float distance = sqrt((newSquare[i].x - trajectory->center.x) * (newSquare[i].x - trajectory->center.x) +
@@ -102,7 +104,6 @@ void loop()
     else
     {
         gladiator->log("[Exo 3D] - Waiting");
-        // killerQueen->zero();
     }
     delay(10);
 }

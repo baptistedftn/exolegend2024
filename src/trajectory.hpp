@@ -1,6 +1,7 @@
 #include "gladiator.h"
 #include "utils.hpp"
 #include <cmath>
+#include <chrono>
 
 #if !defined(TRAJ)
 #define TRAJ
@@ -116,8 +117,11 @@ public:
         }
     }
 
-    bool isOutside()
+    bool isOutside(std::chrono::_V2::steady_clock::time_point startTime)
     {
+        auto end = std::chrono::steady_clock::now();
+        auto elapsedSeconds = std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
+        gladiator->log("Réductions = %d blocs", elapsedSeconds / 20);
         Position currentPosition = gladiator->robot->getData().cposition; // position en m
         // this->currentReduction = initialMazeSize - currentMazeSize;
         gladiator->log("réduction: %f, initial: %f", currentReduction, initialMazeSize);
